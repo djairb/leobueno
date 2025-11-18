@@ -1,0 +1,74 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "nome_completo": "JAIR MESSIAS BOLSONARO",
+            "nome_social": "JAIR MESSIAS",
+            "apelido": "BOLSONARO",
+            "data_nasc": "2000-01-01T12:00:00.000Z",
+            "nome_mae": "MARIA",
+            "nome_pai": "CLARA",
+            "cpf": "69175516004",
+            "rg": "55555551",
+            "naturalidade": "BRASILIA",
+            "nacionalidade": "ESTADOS UNIDOS DA AMÉRICA",
+            "genero_id": 3,
+            "etnia_id": 1,
+            "escolaridade_id": 14,
+            "orgao_emissor_id": 49,
+            "ativo": true,
+            "endereco": [
+                {
+                    "id": 1,
+                    "pessoa_id": 1,
+                    "cep": "55840-000",
+                    "localidade": "LAGOA DO ITAENGA",
+                    "rua": "RUA DA PREFEITURA",
+                    "ponto_referencia": "PREFEITURA",
+                    "numero": "17",
+                    "bairro": "CENTRO",
+                    "cidade": "LAGOA DO ITAENGA",
+                    "estado": "PE"
+                }
+            ],
+            "contato": [
+                {
+                    "id": 1,
+                    "pessoa_id": 1,
+                    "telefone_fixo": "",
+                    "celular": "(81) 99991-7171",
+                    "whatsapp": "",
+                    "email": ""
+                }
+            ],
+            "genero": {
+                "id": 3,
+                "descricao": "Homem trans",
+                "identidade_id": 2,
+                "identidade": {
+                    "id": 2,
+                    "descricao": "Transgênero"
+                }
+            },
+            "etnia": {
+                "id": 1,
+                "descricao": "Branca"
+            },
+            "escolaridade": {
+                "id": 14,
+                "descricao": "Pós-doutorado"
+            },
+            "orgao_emissor": {
+                "id": 49,
+                "descricao": "SSP",
+                "uf_emissor": "SP"
+            },
+            "foto_perfil": "/documentos/1/view"
+        }
+    ],
+    "total": 1,
+    "page": 1,
+    "pageSize": 10,
+    "totalPages": 1
+}
+
