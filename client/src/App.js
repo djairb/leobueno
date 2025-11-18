@@ -5,6 +5,8 @@ import SidebarMenu from './components/SidebarMenu';
 import Header from './components/Header';
 
 import Home from './pages/Home';
+import TelaChamada from './pages/TelaChamada';
+import CadastroProfessor from './pages/CadastroProfessor';
 
 
 export default function App() {
@@ -21,6 +23,14 @@ export default function App() {
           <main className="flex-1 bg-gray-50 p-8">
             <Routes>
               <Route path="/" element={<Home />} />
+
+              <Route path="/professores/novo" element={<CadastroProfessor />} />
+
+              
+
+              
+
+              
               
               
 
