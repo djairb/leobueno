@@ -1,47 +1,43 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useForm } from 'react-hook-form'; // <--- A estrela do show
 import { UserRoundPlus, Mail, CreditCard, Save, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../infra/apiConfig';
 
 export default function CadastroProfessor() {
-  // Estado do Formulário
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    cpf: ''
-  });
-
-  // Estado de Feedback (Carregando, Sucesso, Erro)
+  // Configuração do Hook Form
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
+  
+  // Estado apenas para feedback visual
   const [status, setStatus] = useState({ type: '', message: '' });
 
-  // Máscara de CPF simples
+  // Máscara de CPF
   const mascaraCPF = (value) => {
     return value
-      .replace(/\D/g, '') // Remove tudo que não é dígito
+      .replace(/\D/g, '')
       .replace(/(\d{3})(\d)/, '$1.$2')
       .replace(/(\d{3})(\d)/, '$1.$2')
       .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-      .replace(/(-\d{2})\d+?$/, '$1'); // Limita tamanho
+      .replace(/(-\d{2})\d+?$/, '$1');
   };
 
-  const handleChange = (e) => {
-    let { name, value } = e.target;
-    if (name === 'cpf') value = mascaraCPF(value);
-    setFormData({ ...formData, [name]: value });
+  // Manipulador para atualizar o CPF com máscara no Hook Form
+  const handleCPFChange = (e) => {
+    const masked = mascaraCPF(e.target.value);
+    setValue('cpf', masked); // Atualiza o valor interno
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Função de Envio
+  const onSubmit = async (data) => {
     setStatus({ type: 'loading', message: 'Salvando dados...' });
 
     try {
-      // Ajuste a URL se sua porta for diferente de 3001
-      await axios.post('http://localhost:3001/professores', formData);
+      await axios.post(`${API_BASE_URL}/professores`, data);
       
       setStatus({ type: 'success', message: 'Professor cadastrado com sucesso!' });
-      setFormData({ nome: '', email: '', cpf: '' }); // Limpa o form
-
-      // Limpa a mensagem de sucesso após 3 segundos
+      reset(); // Limpa o formulário
+      
       setTimeout(() => setStatus({ type: '', message: '' }), 3000);
 
     } catch (error) {
@@ -54,14 +50,12 @@ export default function CadastroProfessor() {
     <div className="p-6 md:p-10 bg-gray-50 min-h-full flex flex-col items-center">
       
       <div className="w-full max-w-2xl">
-        {/* Navegação */}
-        <Link to="/" className="flex items-center text-gray-500 hover:text-logoenf mb-6 transition-colors w-fit">
-          <ArrowLeft size={20} className="mr-2" /> Voltar ao Painel
+        <Link to="/professores" className="flex items-center text-gray-500 hover:text-logoenf mb-6 transition-colors w-fit">
+          <ArrowLeft size={20} className="mr-2" /> Voltar para Lista
         </Link>
 
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
           
-          {/* Header do Card */}
           <div className="bg-gradient-to-r from-logoenf to-logoenf-dark p-8 text-white flex items-center gap-5">
             <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
               <UserRoundPlus size={32} />
@@ -72,10 +66,9 @@ export default function CadastroProfessor() {
             </div>
           </div>
 
-          {/* Corpo do Formulário */}
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          {/* Hook Form controla o submit agora */}
+          <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
             
-            {/* Mensagens de Feedback */}
             {status.message && (
               <div className={`p-4 rounded-lg flex items-center gap-3 text-sm font-medium animate-in fade-in slide-in-from-top-2 ${
                 status.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 
@@ -89,59 +82,54 @@ export default function CadastroProfessor() {
 
             {/* Input Nome */}
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Nome Completo</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Nome Completo *</label>
               <div className="relative">
                 <UserRoundPlus className="absolute left-3 top-3.5 text-gray-400" size={20} />
                 <input 
                   type="text" 
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-logoenf focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
+                  {...register("nome", { required: "Nome é obrigatório" })}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-logoenf outline-none transition-all bg-gray-50/50 focus:bg-white ${errors.nome ? 'border-red-500' : 'border-gray-200'}`}
                   placeholder="Ex: Dr. Roberto Martins"
-                  required 
                 />
               </div>
+              {errors.nome && <span className="text-xs text-red-500 mt-1 ml-1">{errors.nome.message}</span>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Input Email */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">E-mail Institucional</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">E-mail Institucional *</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3.5 text-gray-400" size={20} />
                   <input 
                     type="email" 
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-logoenf focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
+                    {...register("email", { required: "E-mail é obrigatório" })}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-logoenf outline-none transition-all bg-gray-50/50 focus:bg-white ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
                     placeholder="prof@escola.com"
-                    required 
                   />
                 </div>
+                {errors.email && <span className="text-xs text-red-500 mt-1 ml-1">{errors.email.message}</span>}
               </div>
 
               {/* Input CPF */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">CPF</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">CPF *</label>
                 <div className="relative">
                   <CreditCard className="absolute left-3 top-3.5 text-gray-400" size={20} />
                   <input 
                     type="text" 
-                    name="cpf"
-                    value={formData.cpf}
-                    onChange={handleChange}
+                    {...register("cpf", { required: "CPF é obrigatório", minLength: { value: 14, message: "CPF incompleto" } })}
+                    onChange={handleCPFChange}
                     maxLength={14}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-logoenf focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white font-mono"
-                    placeholder="000.000.000-00"
-                    required 
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-logoenf outline-none transition-all bg-gray-50/50 focus:bg-white font-mono ${errors.cpf ? 'border-red-500' : 'border-gray-200'}`}
+                    placeholder="000.000.000-00" 
                   />
                 </div>
+                {errors.cpf && <span className="text-xs text-red-500 mt-1 ml-1">{errors.cpf.message}</span>}
               </div>
             </div>
 
-            {/* Botão de Ação */}
+            {/* Botão Submit */}
             <div className="pt-4">
               <button 
                 type="submit" 

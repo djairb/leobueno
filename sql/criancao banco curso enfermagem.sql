@@ -45,7 +45,7 @@ CREATE TABLE turmas (
 CREATE TABLE alunos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(150) NOT NULL,
-    matricula VARCHAR(20) UNIQUE NOT NULL,
+    cpf VARCHAR(14) UNIQUE NOT NULL,
     data_nascimento DATE,
     ativo BOOLEAN DEFAULT TRUE
 );

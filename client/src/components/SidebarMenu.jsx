@@ -4,15 +4,12 @@ import {
   BookCheck,
   GraduationCap,
   Users,
-  CalendarDays,
-  PieChart,
-  Settings,
-  School,
-  UserRoundPlus // <--- IMPORT NOVO
+  UserRound,
+  History, // Ícone para Histórico
+  PieChart // Ícone para Relatórios
 } from "lucide-react";
 
 export default function SidebarMenu({ open, setOpen }) {
-  // Estilos Base (Mantive os seus)
   const baseClasses = "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium text-sm";
   const activeClasses = "bg-logoenf text-white shadow-md shadow-logoenf/20";
   const inactiveClasses = "text-gray-600 hover:bg-logoenf-light/10 hover:text-logoenf-dark";
@@ -26,31 +23,29 @@ export default function SidebarMenu({ open, setOpen }) {
       ],
     },
     {
+      title: "Secretaria", 
+      iconColor: "text-purple-500",
+      links: [
+        { to: "/professores", label: "Professores", icon: <UserRound size={20} /> },
+        { to: "/alunos", label: "Alunos", icon: <Users size={20} /> },
+        { to: "/turmas", label: "Turmas", icon: <GraduationCap size={20} /> },
+      ],
+    },
+    {
       title: "Acadêmico",
       iconColor: "text-logoenf", 
       links: [
         { to: "/chamada", label: "Realizar Chamada", icon: <BookCheck size={20} /> },
-        { to: "/cronograma", label: "Grade Horária", icon: <CalendarDays size={20} /> },
-      ],
-    },
-    {
-      title: "Secretaria", 
-      iconColor: "text-purple-500",
-      links: [
-        // --- NOVO LINK AQUI ---
-        { to: "/professores/novo", label: "Novo Professor", icon: <UserRoundPlus size={20} /> },
-        
-        { to: "/turmas", label: "Gestão de Turmas", icon: <GraduationCap size={20} /> },
-        { to: "/alunos", label: "Alunos & Matrículas", icon: <Users size={20} /> },
-        { to: "/cursos", label: "Cursos Técnicos", icon: <School size={20} /> },
+        // Link Novo: Histórico Geral de Aulas
+        { to: "/aulas", label: "Histórico de Aulas", icon: <History size={20} /> },
       ],
     },
     {
       title: "Gestão",
       iconColor: "text-orange-500",
       links: [
-        { to: "/relatorios", label: "Relatórios de Frequência", icon: <PieChart size={20} /> },
-        { to: "/configuracoes", label: "Configurações", icon: <Settings size={20} /> },
+        // Link dos Gráficos que criamos
+        { to: "/relatorios", label: "Relatórios & Gráficos", icon: <PieChart size={20} /> },
       ],
     },
   ];
@@ -70,6 +65,7 @@ export default function SidebarMenu({ open, setOpen }) {
                   <li key={link.to}>
                     <NavLink
                       to={link.to}
+                      end // Garante que a rota exata seja ativada
                       className={({ isActive }) =>
                         `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`
                       }
@@ -89,6 +85,8 @@ export default function SidebarMenu({ open, setOpen }) {
             </div>
           ))}
         </nav>
+        
+        {/* Rodapé */}
         <div className="p-4 border-t border-gray-100 text-xs text-gray-400 text-center">
           v1.0.0 • Sistema Escolar
         </div>
@@ -111,6 +109,7 @@ export default function SidebarMenu({ open, setOpen }) {
                     <li key={link.to}>
                       <NavLink
                         to={link.to}
+                        end
                         onClick={() => setOpen(false)}
                         className={({ isActive }) => `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
                       >
